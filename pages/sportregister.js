@@ -44,18 +44,18 @@ const labelcss = css`
   }
 `;
 
-export default function SportRegisterPage() {
+export default function MatchRegisterPage() {
   const [match, setMatch] = useState('');
-  const [selectedDate, setSelectedDate] = useState('');
-  const [selectedTime, setSelectedTime] = useState('');
+  const [date, setDate] = useState('');
+  const [time, setTime] = useState('');
   const [location, setLocation] = useState('');
 
-  const handleDateChange = (date) => {
-    setSelectedDate(date);
+  const handleDateChange = (matchdate) => {
+    setDate(matchdate);
   };
 
-  const handleTimeChange = (time) => {
-    setSelectedTime(time);
+  const handleTimeChange = (matchtime) => {
+    setTime(matchtime);
   };
   return (
     <main css={frontPage}>
@@ -73,7 +73,7 @@ export default function SportRegisterPage() {
               Date
               <input
                 type="date"
-                value={selectedDate}
+                value={date}
                 onChange={(event) =>
                   handleDateChange(event.currentTarget.value)
                 }
@@ -91,7 +91,7 @@ export default function SportRegisterPage() {
               Time
               <input
                 type="time"
-                value={selectedTime}
+                value={time}
                 onChange={(event) =>
                   handleTimeChange(event.currentTarget.value)
                 }
