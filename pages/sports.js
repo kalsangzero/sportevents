@@ -1,3 +1,4 @@
+import { match } from 'assert';
 import Head from 'next/head';
 import Layout from '../Component/Layout';
 import styles from '../styles/Home.module.css';
@@ -31,20 +32,10 @@ export default function Sports() {
                   <th>Location</th>
                 </tr>
                 <tr>
-                  <td>18.12.2021</td>
-                  <td>Saturday</td>
-                  <td>18:30</td>
-                  <td>Football</td>
-                  <td>Salzburg – Sturm</td>
-                  <td>Salzburg Stadium</td>
-                </tr>
-                <tr>
-                  <td>23.12.2021</td>
-                  <td>Thursday</td>
-                  <td>20:00</td>
-                  <td>Icehockey</td>
-                  <td>KAC - Capitals</td>
-                  <td>KAC Icehall</td>
+                  <td>{match.date}</td>
+                  <td>{match.time}</td>
+                  <td>{match.matchname}</td>
+                  <td>{match.location}</td>
                 </tr>
               </table>
             </div>
