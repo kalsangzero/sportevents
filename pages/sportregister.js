@@ -66,12 +66,13 @@ export default function SportRegisterPage() {
           <form
             css={formStyles}
             onSubmit={async (event) => {
-              event.preventDefault();
+              await event.preventDefault();
             }}
           >
             <label css={labelcss}>
               Date
               <input
+                type="date"
                 value={selectedDate}
                 onChange={(event) =>
                   handleDateChange(event.currentTarget.value)
@@ -89,6 +90,7 @@ export default function SportRegisterPage() {
             <label css={labelcss}>
               Time
               <input
+                type="time"
                 value={selectedTime}
                 onChange={(event) =>
                   handleTimeChange(event.currentTarget.value)
