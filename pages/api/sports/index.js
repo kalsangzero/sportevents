@@ -24,6 +24,7 @@ export default async function registerHandler(req, res) {
       const createdSport = await insertSport({
         name: body.name,
       });
+      console.log('created sport api', createdSport);
       if (!createdSport) {
         res.status(500).send({ errors: [{ message: 'Sport not create' }] });
         return;

@@ -46,21 +46,14 @@ const labelcss = css`
 `;
 
 export default function MatchRegisterPage(props) {
-  const [matchList, setMatchList] = useState(props.bookmarks);
+  const [matchList, setMatchList] = useState(props.matches);
   const [matchname, setMatchname] = useState('');
   const [date, setDate] = useState('');
   const [time, setTime] = useState('');
   const [location, setLocation] = useState('');
-  const sportId = props.sport.id;
-  const [setErrors] = useState([]);
-  const router = useRouter();
-  const handleDateChange = (matchdate) => {
-    setDate(matchdate);
-  };
 
-  const handleTimeChange = (matchtime) => {
-    setTime(matchtime);
-  };
+  const router = useRouter();
+  const sportId = props.sport.id;
 
   async function createMatch() {
     const matchResponse = await fetch(`/api/sports/${props.sport.id}`, {
@@ -77,17 +70,16 @@ export default function MatchRegisterPage(props) {
       }),
     });
     const match = await matchResponse.json();
-    if ('errors' in match) {
-      setErrors(match.errors);
-      return;
-    }
+
     const newState = [...matchList, match];
     setMatchList(newState);
+
+    console.log('newstate create match', newState);
     setMatchname('');
     setDate('');
     setTime('');
     setLocation('');
-    router.reload();
+    // router.reload();
   }
 
   async function deleteMatch(id) {
@@ -122,9 +114,7 @@ export default function MatchRegisterPage(props) {
               <input
                 type="date"
                 value={date}
-                onChange={(event) =>
-                  handleDateChange(event.currentTarget.value)
-                }
+                onChange={(event) => setDate(event.currentTarget.value)}
               />
             </label>
             <label css={labelcss}>
@@ -140,9 +130,7 @@ export default function MatchRegisterPage(props) {
               <input
                 type="time"
                 value={time}
-                onChange={(event) =>
-                  handleTimeChange(event.currentTarget.value)
-                }
+                onChange={(event) => setTime(event.currentTarget.value)}
               />
             </label>
             <label css={labelcss}>
@@ -164,11 +152,8 @@ export default function MatchRegisterPage(props) {
                 <table>
                   <tr>
                     <th>Date</th>
-                    <th>Day</th>
-
                     <th>Time</th>
-                    <th>Sport</th>
-                    <th>Event</th>
+                    <th>Match</th>
                     <th>Location</th>
                   </tr>
                   <tr>
@@ -197,13 +182,16 @@ export default function MatchRegisterPage(props) {
 }
 
 export async function getServerSideProps(context) {
-  const { getMatchesBySportId } = await import('../../../util/database');
+  // const { getMatchesBySportId } = await import('../../../util/database');
+  const { getMatches } = await import('../../../util/database');
   const { getSport } = await import('../../../util/database');
 
   const sport = await getSport(context.query.sportId);
 
-  const matches = await getMatchesBySportId(context.query.sportId);
+  // const matches = await getMatchesBySportId(context.query.sportId);
 
+  const matches = await getMatches(context.query.sportId);
+  console.log('matchesss', matches);
   return {
     props: {
       matches,

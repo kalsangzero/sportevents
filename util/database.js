@@ -154,7 +154,7 @@ export async function deleteSessionByToken(token) {
   return sessions.map((session) => camelcaseKeys(session))[0];
 }
 
-export async function insertSport(name) {
+export async function insertSport({ name }) {
   const sport = await sql`
     INSERT INTO sports
       (name)
@@ -225,7 +225,13 @@ export async function updateSportById(id, name, _user_id) {
   return sport && camelcaseKeys(sport);
 }
 
-export async function insertMatch(matchname, date, time, location, sportId) {
+export async function insertMatch({
+  matchname,
+  date,
+  time,
+  location,
+  sportId,
+}) {
   const match = await sql`
     INSERT INTO matches
       (matchname, date, time,location, _sport_id)
