@@ -7,7 +7,7 @@ export default function News() {
     <div>
       <Layout>
         <Head>
-          <title>Sports Page</title>
+          <title>Sports News Page</title>
         </Head>
         <div className={styles.container}>
           <Head>

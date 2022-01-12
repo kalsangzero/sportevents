@@ -8,7 +8,7 @@ export default function Contact() {
     <div>
       <Layout>
         <Head>
-          <title>Sports Page</title>
+          <title>Contact Page</title>
         </Head>
         <div className={styles.container}>
           <Head>

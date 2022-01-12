@@ -146,21 +146,71 @@ export default function MatchRegisterPage(props) {
           </form>
         </div>
         <div>
+          <table>
+            <tr>
+              <th
+                style={{
+                  paddingRight: '100px',
+                }}
+              >
+                Date
+              </th>
+              <th
+                style={{
+                  paddingRight: '100px',
+                }}
+              >
+                Time
+              </th>
+              <th
+                style={{
+                  paddingRight: '100px',
+                }}
+              >
+                Location
+              </th>
+              <th
+                style={{
+                  paddingRight: '100px',
+                }}
+              >
+                Match
+              </th>
+            </tr>
+          </table>
           {matchList.map((match) => {
             return (
               <div key={`match-li-${match.id}`}>
                 <table>
                   <tr>
-                    <th>Date</th>
-                    <th>Time</th>
-                    <th>Match</th>
-                    <th>Location</th>
-                  </tr>
-                  <tr>
-                    <td>{match.date}</td>
-                    <td>{match.time}</td>
-                    <td>{match.matchname}</td>
-                    <td>{match.location}</td>
+                    <td
+                      style={{
+                        paddingRight: '80px',
+                      }}
+                    >
+                      {match.date}
+                    </td>
+                    <td
+                      style={{
+                        paddingRight: '80px',
+                      }}
+                    >
+                      {match.time}
+                    </td>
+                    <td
+                      style={{
+                        paddingRight: '80px',
+                      }}
+                    >
+                      {match.location}
+                    </td>
+                    <td
+                      style={{
+                        paddingRight: '80px',
+                      }}
+                    >
+                      {match.matchname}
+                    </td>
                   </tr>
                 </table>
                 <p>

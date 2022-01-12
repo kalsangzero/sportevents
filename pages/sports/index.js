@@ -47,7 +47,7 @@ const formStyles = css`
 export default function RegisterPage(props) {
   const [sportList, setSportList] = useState(props.sports);
   const [name, setName] = useState('');
-
+  const matchList = props.matches;
   async function createSport() {
     const sportResponse = await fetch(`/api/sports`, {
       method: 'POST',
@@ -78,39 +78,6 @@ export default function RegisterPage(props) {
   return (
     <main css={frontPage}>
       <Layout>
-        <div>
-          <h2 css={heading}>Select a Sport to see Matches Schedule</h2>
-          <div css={productLayout}>
-            {sportList.map((sport) => {
-              // actually props.liked user
-              return (
-                <div key={`user-li-${sport.id}`}>
-                  <div css={singleImage}>
-                    <br />
-                    <Link href={`/sports/${sport.id}`}>
-                      <a
-                        style={{
-                          textDecoration: 'none',
-                          color: 'black',
-                        }}
-                      >
-                        <p>{sport.name}</p>
-                      </a>
-                    </Link>
-                  </div>
-                  <button
-                    onClick={() => {
-                      deleteSport(sport.id);
-                    }}
-                  >
-                    Delete
-                  </button>
-                </div>
-              );
-            })}
-          </div>
-        </div>
-
         <form
           css={formStyles}
           onSubmit={async (event) => {
@@ -131,6 +98,113 @@ export default function RegisterPage(props) {
             Register
           </button>
         </form>
+        <div>
+          <h2 css={heading}>Sport Category</h2>
+          <div style={{ display: 'flex' }}>
+            {sportList.map((sport) => {
+              // actually props.liked user
+              return (
+                <div
+                  key={`user-li-${sport.id}`}
+                  style={{
+                    textDecoration: 'none',
+                    color: 'black',
+                    paddingRight: '50px',
+                  }}
+                >
+                  <Link href={`/sports/${sport.id}`}>
+                    <a>
+                      <p>{sport.name}</p>
+                    </a>
+                  </Link>
+
+                  <button
+                    onClick={() => {
+                      deleteSport(sport.id);
+                    }}
+                  >
+                    Delete
+                  </button>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+        <div>
+          <h2 css={heading}>Full Matches Schedule</h2>
+          <div>
+            <table>
+              <tr>
+                <th
+                  style={{
+                    paddingRight: '100px',
+                  }}
+                >
+                  Date
+                </th>
+                <th
+                  style={{
+                    paddingRight: '100px',
+                  }}
+                >
+                  Time
+                </th>
+                <th
+                  style={{
+                    paddingRight: '100px',
+                  }}
+                >
+                  Location
+                </th>
+                <th
+                  style={{
+                    paddingRight: '100px',
+                  }}
+                >
+                  Match
+                </th>
+              </tr>
+            </table>
+            {matchList.map((match) => {
+              return (
+                <div key={`match-li-${match.id}`}>
+                  <table>
+                    <tr>
+                      <td
+                        style={{
+                          paddingRight: '80px',
+                        }}
+                      >
+                        {match.date}
+                      </td>
+                      <td
+                        style={{
+                          paddingRight: '80px',
+                        }}
+                      >
+                        {match.time}
+                      </td>
+                      <td
+                        style={{
+                          paddingRight: '80px',
+                        }}
+                      >
+                        {match.location}
+                      </td>
+                      <td
+                        style={{
+                          paddingRight: '80px',
+                        }}
+                      >
+                        {match.matchname}
+                      </td>
+                    </tr>
+                  </table>
+                </div>
+              );
+            })}
+          </div>
+        </div>
       </Layout>
     </main>
   );
@@ -139,10 +213,14 @@ export default function RegisterPage(props) {
 export async function getServerSideProps() {
   const { getSports } = await import('../../util/database');
   const sports = await getSports();
+
+  const { getMatches } = await import('../../util/database');
+  const matches = await getMatches();
   console.log('getsports', getSports);
   return {
     props: {
       sports,
+      matches,
     },
   };
 }
