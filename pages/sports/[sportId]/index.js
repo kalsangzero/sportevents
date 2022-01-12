@@ -101,7 +101,7 @@ export default function MatchRegisterPage(props) {
     <main css={frontPage}>
       <Layout>
         <div css={registercss}>
-          <h1>Register Sport Event</h1>
+          <h2>Register Sport Event</h2>
 
           <form
             css={formStyles}
@@ -145,6 +145,7 @@ export default function MatchRegisterPage(props) {
             </button>
           </form>
         </div>
+        <h2>{props.sport.name} Matches Schedule</h2>
         <div>
           <table>
             <tr>
@@ -211,17 +212,19 @@ export default function MatchRegisterPage(props) {
                     >
                       {match.matchname}
                     </td>
+                    <td>
+                      {' '}
+                      <button
+                        onClick={() => {
+                          deleteMatch(match.id);
+                        }}
+                      >
+                        remove
+                      </button>
+                    </td>
                   </tr>
                 </table>
-                <p>
-                  <button
-                    onClick={() => {
-                      deleteMatch(match.id);
-                    }}
-                  >
-                    remove
-                  </button>
-                </p>
+                <p></p>
               </div>
             );
           })}
