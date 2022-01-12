@@ -1,35 +1,23 @@
 import { css } from '@emotion/react';
 import Link from 'next/link';
 
-const navStyle = css`
-  padding: 30px 72px;
-  a {
-    color: #f2f2f2;
-    text-align: center;
-    padding: 30px 56px;
-    text-decoration: none;
-    font-size: 20px;
-  }
-  a:hover {
-    color: #ff1966;
-  }
-`;
-
 export default function Header() {
   return (
     <header>
-      <nav css={navStyle}>
+      <nav
+        style={{ padding: '30px 56px', textAlign: 'center', fontSize: '20px' }}
+      >
         <Link href="/">
-          <a>Home</a>
+          <a style={{ padding: '30px 56px' }}>Home</a>
         </Link>
         <Link href="/sports">
-          <a>Sport</a>
+          <a style={{ padding: '30px 56px' }}>Sport</a>
         </Link>
         <Link href="/news">
-          <a>News</a>
+          <a style={{ padding: '30px 56px' }}>News</a>
         </Link>
         <Link href="/login">
-          <a>Login</a>
+          <a style={{ padding: '30px 72px' }}>Login</a>
         </Link>
       </nav>
     </header>

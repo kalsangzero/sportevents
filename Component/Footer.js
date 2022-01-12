@@ -4,7 +4,7 @@ export default function Footer() {
   return (
     <footer className={styles.footer}>
       <a href="/." target="_blank" rel="demo">
-        Created by KalsangCoder
+        Created by Kalsang
       </a>
     </footer>
   );
