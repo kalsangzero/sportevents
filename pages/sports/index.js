@@ -58,10 +58,11 @@ export default function RegisterPage(props) {
     });
 
     const sport = await sportResponse.json();
-    const newSate = [...sportList, sport];
-    setSportList(newSate);
+    const newState = [...sportList, sport];
+    setSportList(newState);
     setName('');
   }
+  console.log('sportlist front', sportList);
   async function deleteSport(id) {
     const sportResponse = await fetch(`/api/sports/${id}`, {
       method: 'DELETE',
@@ -138,7 +139,7 @@ export default function RegisterPage(props) {
 export async function getServerSideProps() {
   const { getSports } = await import('../../util/database');
   const sports = await getSports();
-
+  console.log('getsports', getSports);
   return {
     props: {
       sports,

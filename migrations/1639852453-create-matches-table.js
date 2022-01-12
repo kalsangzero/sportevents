@@ -6,7 +6,7 @@ exports.up = async function up(sql) {
     time varchar(60),
 		date varchar(120),
 		location varchar(240),
-		_sport_id integer REFERENCES sports (id) ON DELETE CASCADE
+		sport_id integer REFERENCES sports (id) ON DELETE CASCADE
 	);`;
 };
 

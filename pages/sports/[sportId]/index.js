@@ -54,7 +54,7 @@ export default function MatchRegisterPage(props) {
 
   const router = useRouter();
   const sportId = props.sport.id;
-
+  console.log('sportIdcreate', sportId);
   async function createMatch() {
     const matchResponse = await fetch(`/api/sports/${props.sport.id}`, {
       method: 'POST',
@@ -182,20 +182,17 @@ export default function MatchRegisterPage(props) {
 }
 
 export async function getServerSideProps(context) {
-  // const { getMatchesBySportId } = await import('../../../util/database');
-  const { getMatches } = await import('../../../util/database');
+  const { getMatchesBySportId } = await import('../../../util/database');
   const { getSport } = await import('../../../util/database');
 
   const sport = await getSport(context.query.sportId);
-
-  // const matches = await getMatchesBySportId(context.query.sportId);
-
-  const matches = await getMatches(context.query.sportId);
-  console.log('matchesss', matches);
+  console.log('checking sport id', sport);
+  const matches = await getMatchesBySportId(context.query.sportId);
+  console.log('matches sport', matches);
   return {
     props: {
-      matches,
       sport,
+      matches,
     },
   };
 }

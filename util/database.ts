@@ -4,12 +4,45 @@ import postgres from 'postgres';
 
 dotenvSafe.config();
 
+export type User = {
+  id: number;
+  username: string;
+  firstname: string;
+  lastname: string;
+};
+
+export type Sport = {
+  id: number;
+  name: string;
+  sportId: number;
+};
+
+export type Match = {
+  id: number;
+  matchname: string;
+  time: string;
+  location: string;
+  sportId: number;
+  date: string;
+};
+
+export type UserWithPasswordHash = User & {
+  password_hash: string;
+};
+
+export type Session = {
+  id: number;
+  token: string;
+  userId: number;
+  expiryTimestamp: Date;
+};
+
 // connect toPostgresSQL
 const sql = postgres();
 sql`SELECT 1;`.then((result) => console.log(result));
 
 export async function getUsers() {
-  const users = await sql`
+  const users = await sql<User[]>`
       SELECT
          id,
          username
@@ -22,8 +55,8 @@ export async function getUsers() {
   });
 }
 
-export async function getUser(id) {
-  const user = await sql`
+export async function getUser(id: number) {
+  const [user] = await sql<[User]>`
       SELECT
       id,
       username
@@ -35,8 +68,8 @@ export async function getUser(id) {
   return camelcaseKeys(user);
 }
 
-export async function getUserWithPasswordHashByUsername(username) {
-  const user = await sql`
+export async function getUserWithPasswordHashByUsername(username: string) {
+  const [user] = await sql<[UserWithPasswordHash | undefined]>`
       SELECT
       id,
       username,
@@ -53,8 +86,13 @@ export async function insertUser({
   passwordHash,
   firstName,
   lastName,
+}: {
+  username: string;
+  passwordHash: string;
+  firstName: string;
+  lastName: string;
 }) {
-  const user = await sql`
+  const [user] = await sql<[User | undefined]>`
     INSERT INTO users
       (username, password_hash, first_name, last_name)
     VALUES
@@ -67,8 +105,8 @@ export async function insertUser({
   `;
   return user && camelcaseKeys(user);
 }
-export async function deleteUserById(id) {
-  const [user] = await sql`
+export async function deleteUserById(id: number) {
+  const [user] = await sql<[User | undefined]>`
     DELETE FROM
       users
     WHERE
@@ -82,8 +120,19 @@ export async function deleteUserById(id) {
   return user && camelcaseKeys(user);
 }
 
-export async function updateUserById(id, username, firstName, lastName) {
-  const user = await sql`
+export async function updateUserById(
+  id: number,
+  {
+    username,
+    firstName,
+    lastName,
+  }: {
+    username: string;
+    firstName: string;
+    lastName: string;
+  },
+) {
+  const [user] = await sql<[User | undefined]>`
     UPDATE
       users
     SET
@@ -101,10 +150,10 @@ export async function updateUserById(id, username, firstName, lastName) {
   return user && camelcaseKeys(user);
 }
 
-export async function getValidSessionByToken(token) {
+export async function getValidSessionByToken(token: string) {
   if (!token) return undefined;
 
-  const [session] = await sql`
+  const [session] = await sql<[Session | undefined]>`
     SELECT
       *
     FROM
@@ -117,8 +166,8 @@ export async function getValidSessionByToken(token) {
   return session && camelcaseKeys(session);
 }
 
-export async function createSession(token, userId) {
-  const session = await sql`
+export async function createSession(token: string, userId: number) {
+  const [session] = await sql<[Session]>`
     INSERT INTO sessions
       (token, user_id)
     VALUES
@@ -131,7 +180,7 @@ export async function createSession(token, userId) {
 }
 
 export async function deleteExpiredSessions() {
-  const sessions = await sql`
+  const sessions = await sql<Session[]>`
     DELETE FROM
       sessions
     WHERE
@@ -142,8 +191,8 @@ export async function deleteExpiredSessions() {
   return sessions.map((session) => camelcaseKeys(session));
 }
 
-export async function deleteSessionByToken(token) {
-  const sessions = await sql`
+export async function deleteSessionByToken(token: string) {
+  const sessions = await sql<Session[]>`
     DELETE FROM
       sessions
     WHERE
@@ -154,8 +203,8 @@ export async function deleteSessionByToken(token) {
   return sessions.map((session) => camelcaseKeys(session))[0];
 }
 
-export async function insertSport({ name }) {
-  const sport = await sql`
+export async function insertSport({ name }: { name: string }) {
+  const [sport] = await sql<[Sport | undefined]>`
     INSERT INTO sports
       (name)
     VALUES
@@ -169,7 +218,7 @@ export async function insertSport({ name }) {
 }
 
 export async function getSports() {
-  const sports = await sql`
+  const sports = await sql<Sport[]>`
       SELECT
          id,
          name
@@ -182,8 +231,8 @@ export async function getSports() {
   });
 }
 
-export async function getSport(id) {
-  const sport = await sql`
+export async function getSport(id: number) {
+  const [sport] = await sql<[Sport]>`
       SELECT
       id,
       name
@@ -195,8 +244,8 @@ export async function getSport(id) {
   return camelcaseKeys(sport);
 }
 
-export async function deleteSportById(id) {
-  const sport = await sql`
+export async function deleteSportById(id: number) {
+  const [sport] = await sql<[Sport | undefined]>`
     DELETE FROM
       sports
     WHERE
@@ -204,26 +253,26 @@ export async function deleteSportById(id) {
     RETURNING
     id,
       name,
-      _user_id
+      user_id
   `;
   return sport && camelcaseKeys(sport);
 }
 
-export async function updateSportById(id, name, _user_id) {
-  const sport = await sql`
-    UPDATE
-      sports
-    SET
-     name = ${name}
-    WHERE
-      id = ${id}
-    RETURNING
-      id,
-      name
+// export async function updateSportById({ id, name, user_id }) {
+//   const sport = await sql`
+//     UPDATE
+//       sports
+//     SET
+//      name = ${name}
+//     WHERE
+//       id = ${id}
+//     RETURNING
+//       id,
+//       name
 
-  `;
-  return sport && camelcaseKeys(sport);
-}
+//   `;
+//   return sport && camelcaseKeys(sport);
+// }
 
 export async function insertMatch({
   matchname,
@@ -231,31 +280,37 @@ export async function insertMatch({
   time,
   location,
   sportId,
+}: {
+  matchname: string;
+  date: string;
+  time: string;
+  location: string;
+  sportId: number;
 }) {
-  const match = await sql`
+  const [match] = await sql<[Match | undefined]>`
     INSERT INTO matches
-      (matchname, date, time,location, _sport_id)
+      (matchname, date, time, location, sport_id)
     VALUES
-     (${matchname}, ${date}, ${time}, ${sportId}, ${location})
+     (${matchname}, ${date}, ${time}, ${location}, ${sportId})
     RETURNING
     matchname,
     date,
     time,
     location,
-    _sport_id
+    sport_id
   `;
   return match && camelcaseKeys(match);
 }
 
 export async function getMatches() {
-  const matches = await sql`
+  const matches = await sql<Match[]>`
       SELECT
          id,
          matchname,
          date,
          time,
          location,
-         _sport_id
+         sport_id
       FROM
          matches
          `;
@@ -265,8 +320,8 @@ export async function getMatches() {
   });
 }
 
-export async function getMatch(id) {
-  const match = await sql`
+export async function getMatch(id: number) {
+  const [match] = await sql<[Match]>`
       SELECT
       id,
       matchname,
@@ -281,8 +336,8 @@ export async function getMatch(id) {
   return camelcaseKeys(match);
 }
 
-export async function deleteMatchById(id) {
-  const match = await sql`
+export async function deleteMatchById(id: number) {
+  const [match] = await sql<[Match | undefined]>`
     DELETE FROM
       matches
     WHERE
@@ -293,18 +348,33 @@ export async function deleteMatchById(id) {
       time,
       date,
       location
-      _sport_id
+      sport_id
   `;
   return match && camelcaseKeys(match);
 }
 
-export async function updateMatchById(id, matchname, time) {
-  const match = await sql`
+export async function updateMatchById(
+  id: number,
+  {
+    matchname,
+    time,
+    location,
+    date,
+  }: {
+    matchname: string;
+    time: string;
+    location: string;
+    date: string;
+  },
+) {
+  const [match] = await sql<[Match | undefined]>`
     UPDATE
       matches
     SET
       matchname = ${matchname},
-      time =${time}
+      time =${time},
+      location = ${location},
+      date= ${date}
     WHERE
       id = ${id}
     RETURNING
@@ -315,7 +385,7 @@ export async function updateMatchById(id, matchname, time) {
   return match && camelcaseKeys(match);
 }
 
-export async function getMatchesBySporId(id) {
+export async function getMatchesBySportId(id: number) {
   const matches = await sql`
      SELECT
    matches.id,
@@ -323,17 +393,17 @@ export async function getMatchesBySporId(id) {
    matches.matchname,
    matches.time,
    matches.location,
-   sports.id as _sport_id
+   sports.id as sport_id
   FROM
    sports,
    matches
   WHERE
-   matches._sport_id = sports.id
+   matches.sport_id = sports.id
   AND
     sports.id = ${id}
 ;
 `;
-  // console.log('proooo', products);
+
   return matches.map((match) => {
     return camelcaseKeys(match);
   });
